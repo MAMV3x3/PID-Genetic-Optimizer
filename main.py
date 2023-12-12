@@ -5,23 +5,23 @@ import json
 class Chromosome:
     chromosome_count = 0
 
-    def __init__(self, gen, kp, ki, kd):
+    def __init__(self, gen, kp, kd):
         Chromosome.chromosome_count += 1
         self.gen = gen
         self.number = Chromosome.chromosome_count
         self.kp = kp
-        self.ki = ki
         self.kd = kd
         self.lap_time = None
 
     def mutate(self, mutation_rate):
-        mutation_range = 0.1
+        mutation_range_kp = 0.1
+        mutation_range_kd = 0.3
+
         if random.random() < mutation_rate:
-            self.kp = max(0, min(1, self.kp + random.uniform(-mutation_range, mutation_range)))
+            self.kp = max(0, min(1, self.kp + random.uniform(-mutation_range_kp, mutation_range_kp)))
+
         if random.random() < mutation_rate:
-            self.ki = max(0, min(1, self.ki + random.uniform(-mutation_range, mutation_range)))
-        if random.random() < mutation_rate:
-            self.kd = max(0, min(1, self.kd + random.uniform(-mutation_range, mutation_range)))
+            self.kd = max(0, min(1, self.kd + random.uniform(-mutation_range_kd, mutation_range_kd)))
 
     def clone(self):
         return copy.deepcopy(self)
@@ -31,14 +31,13 @@ class Chromosome:
             'gen': self.gen,
             'number': self.number,
             'kp': self.kp,
-            'ki': self.ki,
             'kd': self.kd,
             'lap_time': self.lap_time
         }
 
     @classmethod
     def from_dict(cls, data):
-        chromosome = cls(data['gen'], data['kp'], data['ki'], data['kd'])
+        chromosome = cls(data['gen'], data['kp'], data['kd'])
         chromosome.number = data['number']
         chromosome.lap_time = data['lap_time']
         return chromosome
@@ -46,7 +45,7 @@ class Chromosome:
 class Population:
     def __init__(self, size):
         self.size = size
-        self.chromosomes = [Chromosome(1, random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1)) for _ in range(size)]
+        self.chromosomes = [Chromosome(1, random.uniform(0, 1), random.uniform(0, 1)) for _ in range(size)]
 
     def to_dict(self):
         return {'chromosomes': [chromosome.to_dict() for chromosome in self.chromosomes]}
@@ -70,29 +69,24 @@ def report_lap_time(chromosome):
 def display_chromosomes(population):
     print("\nChromosomes:")
     for chromosome in population.chromosomes:
-        print(f"Chromosome {chromosome.number} (Gen {chromosome.gen}): KP={chromosome.kp}, KI={chromosome.ki}, KD={chromosome.kd}")
-
-# def crossover(parent1, parent2):
-#     # Perform crossover by mixing the parameters of two parents
-#     kp = (parent1.kp + parent2.kp) / 2
-#     ki = (parent1.ki + parent2.ki) / 2
-#     kd = (parent1.kd + parent2.kd) / 2
-#     return Chromosome(gen=parent1.gen, kp=kp, ki=ki, kd=kd)
+        print(f"Chromosome {chromosome.number} (Gen {chromosome.gen}): KP={chromosome.kp}, KD={chromosome.kd}")
 
 def crossover(parent1, parent2):
-    # Perform arithmetic crossover by mixing the parameters of two parents
-    alpha = random.uniform(0, 1)
-    kp = alpha * parent1.kp + (1 - alpha) * parent2.kp
-    ki = alpha * parent1.ki + (1 - alpha) * parent2.ki
-    kd = alpha * parent1.kd + (1 - alpha) * parent2.kd
-    return Chromosome(gen=parent1.gen, kp=kp, ki=ki, kd=kd)
+    # Perform a simple arithmetic crossover for both KP and KD
+    alpha_kp = random.uniform(0, 1)
+    alpha_kd = random.uniform(0, 1)
+    
+    kp = alpha_kp * parent1.kp + (1 - alpha_kp) * parent2.kp
+    kd = alpha_kd * parent1.kd + (1 - alpha_kd) * parent2.kd
+    
+    return Chromosome(gen=parent1.gen, kp=kp, kd=kd)
 
 def generate_next_generation(population, mutation_rate):
     sorted_chromosomes = sorted(population.chromosomes, key=lambda x: x.lap_time)
     best_chromosome = sorted_chromosomes[0]
 
-    print("\nBest Chromosome (Gen {}): KP={}, KI={}, KD={}, Lap Time={}".format(
-        best_chromosome.gen, best_chromosome.kp, best_chromosome.ki, best_chromosome.kd, best_chromosome.lap_time))
+    print("\nBest Chromosome (Gen {}): KP={}, KD={}, Lap Time={}".format(
+        best_chromosome.gen, best_chromosome.kp, best_chromosome.kd, best_chromosome.lap_time))
 
     new_chromosomes = [best_chromosome.clone()]
 
@@ -102,8 +96,8 @@ def generate_next_generation(population, mutation_rate):
         parent2 = random.choice(sorted_chromosomes[1:])  # Choose from the rest of the population
         new_chromosome = crossover(parent1, parent2)
 
-        # Update the generation number
-        new_chromosome.gen += 1
+        # Update the generation number based on the biggest generation number of all chromosomes
+        new_chromosome.gen = max(parent1.gen, parent2.gen) + 1
 
         # Apply mutation to the new chromosome
         new_chromosome.mutate(mutation_rate)
@@ -137,7 +131,7 @@ def save_best_chromosomes(best_chromosomes, filename):
 def main():
     population_size = 5
     generations = 1000
-    mutation_rate = 0.2
+    mutation_rate = 0.35
 
     load_from_file = input("Do you want to load from a file? (y/n): ").lower() == 'y'
     if load_from_file:
@@ -151,7 +145,6 @@ def main():
     if custom_values:
         for chromosome in population.chromosomes:
             chromosome.kp = float(input(f"Enter custom KP for Chromosome {chromosome.number}: "))
-            chromosome.ki = float(input(f"Enter custom KI for Chromosome {chromosome.number}: "))
             chromosome.kd = float(input(f"Enter custom KD for Chromosome {chromosome.number}: "))
 
     for gen in range(current_generation, generations + 1):
