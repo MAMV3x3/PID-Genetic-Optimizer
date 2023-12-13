@@ -2,9 +2,11 @@ import random
 import copy
 import json
 
+# Define the Chromosome class
 class Chromosome:
     chromosome_count = 0
 
+    # Initialize the Chromosome class with the given generation number, KP and KD values
     def __init__(self, gen, kp, kd):
         Chromosome.chromosome_count += 1
         self.gen = gen
@@ -13,19 +15,23 @@ class Chromosome:
         self.kd = kd
         self.lap_time = None
 
+    # Mutate the chromosome with the given mutation rate
     def mutate(self, mutation_rate):
         mutation_range_kp = 0.1
         mutation_range_kd = 0.3
 
+        # Mutathe KP and KD values based on mutation rate
         if random.random() < mutation_rate:
             self.kp = max(0, min(1, self.kp + random.uniform(-mutation_range_kp, mutation_range_kp)))
 
         if random.random() < mutation_rate:
             self.kd = max(0, min(1, self.kd + random.uniform(-mutation_range_kd, mutation_range_kd)))
 
+    # Clone the chromosome
     def clone(self):
         return copy.deepcopy(self)
 
+    # Convert the chromosome to a dictionary
     def to_dict(self):
         return {
             'gen': self.gen,
@@ -35,6 +41,7 @@ class Chromosome:
             'lap_time': self.lap_time
         }
 
+    # Create a Chromosome from a dictionary
     @classmethod
     def from_dict(cls, data):
         chromosome = cls(data['gen'], data['kp'], data['kd'])
@@ -42,20 +49,25 @@ class Chromosome:
         chromosome.lap_time = data['lap_time']
         return chromosome
 
+# Define the Population class
 class Population:
+    # Initialize the Population class with the given size
     def __init__(self, size):
         self.size = size
         self.chromosomes = [Chromosome(1, random.uniform(0, 1), random.uniform(0, 1)) for _ in range(size)]
 
+    # Convert the population to a dictionary
     def to_dict(self):
         return {'chromosomes': [chromosome.to_dict() for chromosome in self.chromosomes]}
 
+    # Create a Population from a dictionary
     @classmethod
     def from_dict(cls, data):
         population = cls(len(data['chromosomes']))
         population.chromosomes = [Chromosome.from_dict(chromosome_data) for chromosome_data in data['chromosomes']]
         return population
 
+# Define the function to report lap time for a Chromosome
 def report_lap_time(chromosome):
     while True:
         try:
@@ -66,11 +78,13 @@ def report_lap_time(chromosome):
         except ValueError:
             print("Invalid input. Please enter a valid lap time.")
 
+# Function to display the Chromosomes in a Population
 def display_chromosomes(population):
     print("\nChromosomes:")
     for chromosome in population.chromosomes:
         print(f"Chromosome {chromosome.number} (Gen {chromosome.gen}): KP={chromosome.kp}, KD={chromosome.kd}")
 
+# Function to perform crossover between two Chromosomes
 def crossover(parent1, parent2):
     # Perform a simple arithmetic crossover for both KP and KD
     alpha_kp = random.uniform(0, 1)
@@ -81,6 +95,7 @@ def crossover(parent1, parent2):
     
     return Chromosome(gen=parent1.gen, kp=kp, kd=kd)
 
+# Function to generate the next generation of Chromosomes
 def generate_next_generation(population, mutation_rate):
     sorted_chromosomes = sorted(population.chromosomes, key=lambda x: x.lap_time)
     best_chromosome = sorted_chromosomes[0]
@@ -109,12 +124,14 @@ def generate_next_generation(population, mutation_rate):
 
     return new_population
 
+# Function to save the Population to a file
 def save_population(population, filename, generation):
     data = population.to_dict()
     data['generation'] = generation
     with open(filename, 'w') as file:
         json.dump(data, file)
 
+# Function to load the Population from a file
 def load_population(filename):
     with open(filename, 'r') as file:
         data = json.load(file)
@@ -122,17 +139,21 @@ def load_population(filename):
     population.chromosomes = [Chromosome.from_dict(chromosome_data) for chromosome_data in data['chromosomes']]
     return population, data.get('generation', 1)
 
+# Function to save the best Chromosomes to a file
 def save_best_chromosomes(best_chromosomes, filename):
     with open(filename, 'a') as file:
         for chromosome in best_chromosomes:
             json_str = json.dumps(chromosome.to_dict())
             file.write(json_str + '\n')
 
+# Main function
 def main():
+    # Set the parameters
     population_size = 5
-    generations = 1000
+    generations = 12
     mutation_rate = 0.35
 
+    # Load the population from a file if required
     load_from_file = input("Do you want to load from a file? (y/n): ").lower() == 'y'
     if load_from_file:
         filename = input("Enter filename to load: ")
@@ -141,12 +162,14 @@ def main():
         population = Population(population_size)
         current_generation = 1
 
+    # Ask for custom values if required
     custom_values = input("Do you want to input custom values? (y/n): ").lower() == 'y'
     if custom_values:
         for chromosome in population.chromosomes:
             chromosome.kp = float(input(f"Enter custom KP for Chromosome {chromosome.number}: "))
             chromosome.kd = float(input(f"Enter custom KD for Chromosome {chromosome.number}: "))
 
+    # Start the evolution
     for gen in range(current_generation, generations + 1):
         print(f"\nGeneration {gen}")
 
