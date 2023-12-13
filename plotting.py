@@ -2,44 +2,53 @@ import json
 import matplotlib.pyplot as plt
 
 def plot_lap_time_evolution(filename):
-    generations = []
+    iterations = []
     lap_times = []
 
     with open(filename, 'r') as file:
-        for line in file:
+        for i, line in enumerate(file, start=1):
             data = json.loads(line)
-            generations.append(data['gen'])
+            iterations.append(i)
             lap_times.append(data['lap_time'])
 
-    plt.plot(generations, lap_times, marker='o')
+    plt.plot(iterations, lap_times, marker='o', label='Lap Time')
+    
     plt.title('Lap Time Evolution Over Generations')
-    plt.xlabel('Generation')
+    plt.xlabel('Iteration')
     plt.ylabel('Lap Time')
+    plt.legend()
     plt.show()
 
-def plot_parameter_evolution(filename):
-    generations = []
+def plot_parameter_evolution(filename, ideal_kp=None, ideal_kd=None):
+    iterations = []
     kp_values = []
-    ki_values = []
     kd_values = []
 
     with open(filename, 'r') as file:
-        for line in file:
+        for i, line in enumerate(file, start=1):
             data = json.loads(line)
-            generations.append(data['gen'])
+            iterations.append(i)
             kp_values.append(data['kp'])
-            ki_values.append(data['ki'])
             kd_values.append(data['kd'])
 
-    plt.plot(generations, kp_values, label='KP', marker='o')
-    plt.plot(generations, ki_values, label='KI', marker='o')
-    plt.plot(generations, kd_values, label='KD', marker='o')
+    plt.plot(iterations, kp_values, label='KP', marker='o', color='mediumblue')
+    plt.plot(iterations, kd_values, label='KD', marker='o', color='deeppink')
+    
+    # Add dotted lines for ideal KP and KD if provided
+    if ideal_kp is not None:
+        plt.axhline(y=ideal_kp, linestyle='--', color='cornflowerblue', label='Ideal KP')
+
+    if ideal_kd is not None:
+        plt.axhline(y=ideal_kd, linestyle='--', color='pink', label='Ideal KD')
+
     plt.title('Parameter Evolution Over Generations')
-    plt.xlabel('Generation')
+    plt.xlabel('Iteration')
     plt.ylabel('Parameter Value')
     plt.legend()
     plt.show()
 
-# Add these function calls at the end of your script
+ideal_kp = 0.013
+ideal_kd = 0.26 
+
 plot_lap_time_evolution('best_chromosomes.jsonl')
-plot_parameter_evolution('best_chromosomes.jsonl')
+plot_parameter_evolution('best_chromosomes.jsonl', ideal_kp, ideal_kd)
