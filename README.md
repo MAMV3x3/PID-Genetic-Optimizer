@@ -126,11 +126,11 @@ The optimization process was run for multiple iterations, and here are the resul
 
 #### Lap Time Evolution Over Generations
 
-![Time](https://github.com/MAMV3x3/PID-Genetic-Optimizer/assets/84588180/bb4c45e7-f8ac-48dc-bc2d-5994a4b0753f)
+![Time](https://github.com/MAMV3x3/PID-Genetic-Optimizer/assets/84588180/ffa40408-1695-4e9a-8182-37ae29fe6dc8)
 
 #### Parameter Evolution Over Generations
 
-![Constants](https://github.com/MAMV3x3/PID-Genetic-Optimizer/assets/84588180/2729b436-8f8e-4b9d-811d-e51c1e91b9df)
+![Constants](https://github.com/MAMV3x3/PID-Genetic-Optimizer/assets/84588180/6d4b2b0c-57e8-49ac-a865-6c0629ab8a18)
 
 The code to generate the plots is available [here](https://github.com/MAMV3x3/PID-Genetic-Optimizer/blob/main/plotting.py).
 ### Comparison
