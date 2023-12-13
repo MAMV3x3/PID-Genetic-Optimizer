@@ -11,8 +11,8 @@ def plot_lap_time_evolution(filename):
             iterations.append(i)
             lap_times.append(data['lap_time'])
 
-    plt.plot(iterations, lap_times, marker='o', label='Lap Time')
-    
+    plt.plot(iterations, lap_times, marker='o', label='Lap Time', color='limegreen')
+
     plt.title('Lap Time Evolution Over Generations')
     plt.xlabel('Iteration')
     plt.ylabel('Lap Time')
@@ -31,24 +31,38 @@ def plot_parameter_evolution(filename, ideal_kp=None, ideal_kd=None):
             kp_values.append(data['kp'])
             kd_values.append(data['kd'])
 
-    plt.plot(iterations, kp_values, label='KP', marker='o', color='mediumblue')
-    plt.plot(iterations, kd_values, label='KD', marker='o', color='deeppink')
-    
+    # Create a figure and primary axis
+    fig, ax1 = plt.subplots()
+
+    # Plot KD values on the primary axis
+    ax1.set_xlabel('Iteration')
+    ax1.set_ylabel('KD', color='deeppink')
+    kd_line, = ax1.plot(iterations, kd_values, marker='o', color='deeppink', label='KD')
+    ax1.tick_params(axis='y', labelcolor='deeppink')
+
+    # Create a secondary y-axis
+    ax2 = ax1.twinx()
+
+    # Plot KP values on the secondary axis
+    ax2.set_ylabel('KP', color='mediumblue')
+    kp_line, = ax2.plot(iterations, kp_values, marker='o', color='mediumblue', label='KP')
+    ax2.tick_params(axis='y', labelcolor='mediumblue')
+
     # Add dotted lines for ideal KP and KD if provided
     if ideal_kp is not None:
-        plt.axhline(y=ideal_kp, linestyle='--', color='cornflowerblue', label='Ideal KP')
+        ideal_kp_line = ax2.axhline(y=ideal_kp, linestyle='--', color='cornflowerblue', label='Ideal KP')
 
     if ideal_kd is not None:
-        plt.axhline(y=ideal_kd, linestyle='--', color='pink', label='Ideal KD')
+        ideal_kd_line = ax1.axhline(y=ideal_kd, linestyle='--', color='pink', label='Ideal KD')
 
+    # Display the plot with explicit legend handles and labels
     plt.title('Parameter Evolution Over Generations')
-    plt.xlabel('Iteration')
-    plt.ylabel('Parameter Value')
-    plt.legend()
+    plt.legend(handles=[kd_line, kp_line, ideal_kd_line, ideal_kp_line],
+               labels=['KD', 'KP', 'Ideal KD', 'Ideal KP'])
     plt.show()
 
 ideal_kp = 0.013
-ideal_kd = 0.26 
+ideal_kd = 0.26
 
 plot_lap_time_evolution('best_chromosomes.jsonl')
 plot_parameter_evolution('best_chromosomes.jsonl', ideal_kp, ideal_kd)
