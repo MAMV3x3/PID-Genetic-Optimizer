@@ -106,31 +106,31 @@ This is the following prompt it ask for a manual input for the first generation 
 After this, values will be generated and a human must evaluate them, recording each time performance in the console and after the generation is completed, it will ask to save the best value in a file just before proceeding to the next generation. The stop criteria has to be at the human consideration at the moment the ideal performance is reached.
 ## Results
 
-The optimization process was run for multiple iterations, and here are the results for selected iterations:
+The optimization process was run for multiple iterations, and here are the results for the best chromosomes over generations:
 
 | Iteration | Gen | Number | KP                   | KD                   | Lap Time |
 |-----------|-----|--------|----------------------|----------------------|----------|
-| 1         | 1   | 5      | 0.014586226564698124 | 0.06521582373854175  | 3.76     |
-| 2         | 1   | 5      | 0.014586226564698124 | 0.06521582373854175  | 3.76     |
-| 3         | 3   | 18     | 0.014404903617277962 | 0.10158877009982219  | 3.55     |
-| 4         | 3   | 18     | 0.014404903617277962 | 0.10158877009982219  | 3.55     |
-| 5         | 5   | 23     | 0.012474477296694935 | 0.29396664154337565  | 3.23     |
-| 6         | 5   | 23     | 0.012474477296694935 | 0.29396664154337565  | 3.23     |
-| 7         | 7   | 41     | 0.012819959187179835 | 0.20226760794961973  | 3.20     |
-| 8         | 8   | 50     | 0.01257733001537879  | 0.2797784764167482   | 3.16     |
-| 9         | 8   | 50     | 0.01257733001537879  | 0.2797784764167482   | 3.16     |
-| 10        | 10  | 67     | 0.012583520710816695 | 0.24676955949997498  | 3.14     |
-| 11        | 11  | 74     | 0.012577624538492666 | 0.260206824009848    | 3.10     |
+| 1         | 1   | 5      | 0.014586226564698124 | 0.06521582373854175  | 3.85     |
+| 2         | 1   | 5      | 0.014586226564698124 | 0.06521582373854175  | 3.85     |
+| 3         | 3   | 18     | 0.014404903617277962 | 0.10158877009982219  | 3.74     |
+| 4         | 3   | 18     | 0.014404903617277962 | 0.10158877009982219  | 3.74     |
+| 5         | 5   | 23     | 0.012474477296694935 | 0.29396664154337565  | 3.69     |
+| 6         | 5   | 23     | 0.012474477296694935 | 0.29396664154337565  | 3.69     |
+| 7         | 7   | 41     | 0.012819959187179835 | 0.20226760794961973  | 3.61     |
+| 8         | 8   | 50     | 0.012819959187179835 | 0.24676955949997498  | 3.58     |
+| 9         | 10  | 67     | 0.01257733001537879  | 0.2797784764167482   | 3.54     |
+| 10        | 10  | 67     | 0.01257733001537879  | 0.2797784764167482   | 3.54     |
+| 11        | 11  | 74     | 0.013287624538492666 | 0.260206824009848    | 3.49     |
 
 ### Performance Plots
 
 #### Lap Time Evolution Over Generations
 
-![Time](https://github.com/MAMV3x3/PID-Genetic-Optimizer/assets/84588180/01da52d6-ffac-46c5-a093-02e8ef3aa07c)
+![Time](https://github.com/MAMV3x3/PID-Genetic-Optimizer/assets/84588180/bb4c45e7-f8ac-48dc-bc2d-5994a4b0753f)
 
 #### Parameter Evolution Over Generations
 
-![Constants](https://github.com/MAMV3x3/PID-Genetic-Optimizer/assets/84588180/74670074-734a-4bfe-8af0-374c8e92765f)
+![Constants](https://github.com/MAMV3x3/PID-Genetic-Optimizer/assets/84588180/2729b436-8f8e-4b9d-811d-e51c1e91b9df)
 
 The code to generate the plots is available [here](https://github.com/MAMV3x3/PID-Genetic-Optimizer/blob/main/plotting.py).
 ### Comparison
@@ -140,8 +140,8 @@ Compare the last iteration's values with the expert-set manual values of KP=0.01
 - **Manually set KP**: 0.013
 - **Manually set KD**: 0.26
 
-- **Last iteration KP**: 0.0125776
-- **Last iteration KD**: 0.260206
+- **Last iteration KP**: 0.013287624538492666
+- **Last iteration KD**: 0.260206824009848
 
 ## References
 
