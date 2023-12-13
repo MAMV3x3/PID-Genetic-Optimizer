@@ -6,7 +6,7 @@ The PID Genetic Optimizer is a tool designed to find optimal Proportional-Integr
 
 This optimizer involves human interaction to select the best-performing PID values among the generated population. The performance metric uses a cost function to measure the performance using time reference, where the algorithm chooses the parameters resulting in the lowest time to meet the desired system behavior.
 
-The genetic algorithm employed in this optimizer utilizes arithmetic crossover as the primary genetic operator.
+The genetic algorithm employed in this optimizer uses arithmetic crossover as the primary genetic operator.
 
 ## How It Works
 
